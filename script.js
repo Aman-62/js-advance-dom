@@ -4,8 +4,11 @@ const modal = document.querySelector(".modal");
 const overlay = document.querySelector(".overlay");
 const btnOpenModal = document.querySelectorAll(".btn--show-modal");
 const btnCloseModal = document.querySelector(".btn--close-modal");
-const header = document.querySelector(".header");
+const btnScrollTo = document.querySelector(".btn--scroll-to");
+const section1 = document.querySelector("#section--1");
 
+///////////////////////////////////////
+//* Modal
 function openModal() {
   modal.classList.remove("hidden");
   overlay.classList.remove("hidden");
@@ -23,8 +26,40 @@ document.addEventListener("keydown", function (e) {
   if (e.key === "Escape" && !modal.classList.contains("hidden")) closeModal();
 });
 
-//////////////////////
+///////////////////////////////////////
+//* Button scrolling
+btnScrollTo.addEventListener("click", (e) => {
+  const s1coords = section1.getBoundingClientRect();
+  console.log(s1coords);
 
+  console.log(e.target.getBoundingClientRect());
+
+  console.log("Current scroll (X/Y) ", window.pageXOffset, window.pageYOffset);
+
+  console.log(
+    "height/width viewport ",
+    document.documentElement.clientHeight,
+    document.documentElement.clientWidth
+  );
+
+  // smooth scrolling
+
+  // window.scrollTo(s1coords.left, s1coords.top);
+
+  // window.scrollTo({
+  //   left: s1coords.left,
+  //   top: s1coords.top,
+  //   behavior: "smooth",
+  // });
+
+  section1.scrollIntoView({ behavior: "smooth" });
+});
+
+///////////////////////////////////////
+///////////////////////////////////////
+///////////////////////////////////////
+
+/*
 // console.log(document.documentElement);
 // console.log(document.head);
 // console.log(document.body);
@@ -82,30 +117,4 @@ logo.classList.add("hello", "bye");
 logo.classList.remove("bye");
 logo.classList.toggle("open");
 logo.classList.contains("open");
-
-const btnScrollTo = document.querySelector(".btn--scroll-to");
-const section1 = document.querySelector("#section--1");
-
-btnScrollTo.addEventListener("click", (e) => {
-  const s1coords = section1.getBoundingClientRect();
-  console.log(s1coords);
-
-  console.log(e.target.getBoundingClientRect());
-
-  console.log("Current scroll (X/Y) ", window.pageXOffset, window.pageYOffset);
-
-  console.log(
-    "height/width viewport ",
-    document.documentElement.clientHeight,
-    document.documentElement.clientWidth
-  );
-
-  // scrolling
-  // window.scrollTo(s1coords.left, s1coords.top);
-
-  window.scrollTo({
-    left: s1coords.left,
-    top: s1coords.top,
-    behavior: "smooth",
-  });
-});
+*/
