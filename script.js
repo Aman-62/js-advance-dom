@@ -56,6 +56,8 @@ btnScrollTo.addEventListener("click", (e) => {
 });
 
 ///////////////////////////////////////
+
+///////////////////////////////////////
 ///////////////////////////////////////
 ///////////////////////////////////////
 
@@ -117,4 +119,68 @@ logo.classList.add("hello", "bye");
 logo.classList.remove("bye");
 logo.classList.toggle("open");
 logo.classList.contains("open");
+
+///////////////////////////////////////
+//* Types of Events and Event Handler
+const h1 = document.querySelector("h1");
+
+const alertH1 = () => {
+  alert("AddEventListener! You are reading heading");
+  // h1.removeEventListener("mouseenter", alertH1);
+};
+
+h1.addEventListener("mouseenter", alertH1);
+
+setTimeout(() => {
+  h1.removeEventListener("mouseenter", alertH1);
+}, 5000);
+
+// h1.onmouseenter = function () {
+//   alert("onmouseenter! You are reading heading");
+// };
+
+// rgb(0-255, 0-255, 0-255)
+
+//* Event Propagation in Practice
+const randomInt = (min, max) => {
+  return Math.floor(Math.random() * (max - min + 1) + min);
+};
+
+const randomColor = () => {
+  return `rgb(${randomInt(0, 255)},${randomInt(0, 255)},${randomInt(0, 255)})`;
+};
+
+document.querySelector(".nav__link").addEventListener(
+  "click",
+  function (e) {
+    this.style.backgroundColor = randomColor();
+    console.log("LINK", e.target, e.currentTarget);
+    console.log(this == e.currentTarget);
+
+    // Stop propagation
+    // e.stopPropagation();
+  },
+  true
+);
+
+document.querySelector(".nav__links").addEventListener(
+  "click",
+  function (e) {
+    this.style.backgroundColor = randomColor();
+    console.log("UL", e.target, e.currentTarget);
+    console.log(this == e.currentTarget);
+  },
+  true
+);
+
+document.querySelector(".nav").addEventListener(
+  "click",
+  function (e) {
+    this.style.backgroundColor = randomColor();
+    console.log("NAV", e.target, e.currentTarget);
+    console.log(this == e.currentTarget);
+  },
+  true
+);
+
 */
