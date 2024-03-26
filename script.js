@@ -12,6 +12,12 @@ const tabs = document.querySelectorAll(".operations__tab");
 const tabsContainer = document.querySelector(".operations__tab-container");
 const tabsContent = document.querySelectorAll(".operations__content");
 const nav = document.querySelector(".nav");
+const slides = document.querySelectorAll(".slide");
+const btnLeft = document.querySelector(".slider__btn--left");
+const btnRight = document.querySelector(".slider__btn--right");
+
+let currentSlide = 0;
+const maxSlide = slides.length;
 
 ///////////////////////////////////////
 //* Modal
@@ -42,11 +48,7 @@ btnScrollTo.addEventListener("click", (e) => {
 
   console.log("Current scroll (X/Y) ", window.pageXOffset, window.pageYOffset);
 
-  console.log(
-    "height/width viewport ",
-    document.documentElement.clientHeight,
-    document.documentElement.clientWidth
-  );
+  console.log("height/width viewport ", document.documentElement.clientHeight, document.documentElement.clientWidth);
 
   // smooth scrolling
 
@@ -99,9 +101,7 @@ tabsContainer.addEventListener("click", function (e) {
   clicked.classList.add("operations__tab--active");
 
   // Activate content area
-  document
-    .querySelector(`.operations__content--${clicked.dataset.tab}`)
-    .classList.add("operations__content--active");
+  document.querySelector(`.operations__content--${clicked.dataset.tab}`).classList.add("operations__content--active");
 });
 
 ///////////////////////////////////////
@@ -119,8 +119,139 @@ const handleHover = function (e) {
   }
 };
 nav.addEventListener("mouseover", handleHover.bind(0.5));
-
 nav.addEventListener("mouseout", handleHover.bind(1));
+
+///////////////////////////////////////
+// * Sticky navigation
+// const initialCoords = section1.getBoundingClientRect();
+
+// window.addEventListener("scroll", function (e) {
+//   if (this.window.scrollY > initialCoords.top) {
+//     nav.classList.add("sticky");
+//   } else {
+//     nav.classList.remove("sticky");
+//   }
+// });
+
+// const obsCallback = function (entries, observer) {
+//   entries.forEach((entry) => {
+//     console.log(entry);
+//     console.log(entry.isIntersecting);
+//   });
+// };
+
+// const obsOptions = {
+//   // null = viewport
+//   root: null,
+//   threshold: 0.1,
+// };
+
+// const observer = new IntersectionObserver(obsCallback, obsOptions);
+// // section1 is a target element
+// observer.observe(section1);
+
+const header = document.querySelector(".header");
+const navHeight = nav.getBoundingClientRect().height;
+
+const stickyNav = function (entries) {
+  const [entry] = entries;
+
+  if (!entry.isIntersecting) {
+    nav.classList.add("sticky");
+  } else {
+    nav.classList.remove("sticky");
+  }
+};
+
+const headerObserver = new IntersectionObserver(stickyNav, {
+  root: null,
+  threshold: 0,
+  rootMargin: `-${navHeight}px`,
+});
+headerObserver.observe(header);
+
+///////////////////////////////////////
+// * Reveal sections
+const allSection = document.querySelectorAll(".section");
+
+const revealSection = function (entries, observer) {
+  const [entry] = entries;
+
+  console.log(entry.target);
+
+  if (!entry.isIntersecting) return;
+
+  entry.target.classList.remove("section--hidden");
+  observer.unobserve(entry.target);
+};
+
+const sectionObserver = new IntersectionObserver(revealSection, {
+  root: null,
+  threshold: 0.15,
+});
+
+allSection.forEach((section) => {
+  sectionObserver.observe(section);
+  section.classList.add("section--hidden");
+});
+
+///////////////////////////////////////
+// * Lazy loading images
+
+const imgTarget = document.querySelectorAll("img[data-src]");
+
+const loadImg = (entries, observer) => {
+  const [entry] = entries;
+
+  if (!entry.isIntersecting) return;
+
+  entry.target.src = entry.target.dataset.src;
+
+  entry.target.addEventListener("load", function () {
+    entry.target.classList.remove("lazy-img");
+  });
+
+  observer.unobserve(entry.target);
+};
+
+const imgObserver = new IntersectionObserver(loadImg, {
+  root: null,
+  threshold: 0,
+});
+
+imgTarget.forEach((img) => imgObserver.observe(img));
+
+///////////////////////////////////////
+// * Slider
+function goToSlide(slide) {
+  slides.forEach((s, i) => {
+    s.style.transform = `translateX(${100 * (i - slide)}%)`;
+  });
+}
+goToSlide(0);
+
+// next slide
+const nextSlide = function () {
+  if (currentSlide === maxSlide - 1) {
+    currentSlide = 0;
+  } else {
+    currentSlide++;
+  }
+  goToSlide(currentSlide);
+};
+
+// prev slide
+const prevSlide = function () {
+  if (currentSlide === 0) {
+    currentSlide = maxSlide - 1;
+  } else {
+    currentSlide--;
+  }
+  goToSlide(currentSlide);
+};
+
+btnRight.addEventListener("click", nextSlide);
+btnLeft.addEventListener("click", prevSlide);
 
 ///////////////////////////////////////
 
